@@ -60,6 +60,10 @@ It includes:
 - Docker Desktop (for local PostgreSQL and optional Kubernetes)
 - kubectl + Helm (optional, for cluster deployment)
 
+## Infrastructure CLI Guide
+
+- DigitalOcean CLI (doctl): see [DOCTL_GUIDE.md](DOCTL_GUIDE.md)
+
 ## Quick Start (Local)
 
 1. Install dependencies from repository root:
