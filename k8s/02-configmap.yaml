@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kube-news-config
+  namespace: kube-news
+data:
+  POSTGRES_DB: "kubedevnews"
+  API_PORT: "3001"
+  WEB_PORT: "3000"
+  CORS_ORIGIN: "http://localhost:30082"
+  NEXT_PUBLIC_API_URL: "http://localhost:30081"

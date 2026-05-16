@@ -1,0 +1,6 @@
+apiVersion: v2
+name: kube-news
+description: Kube News monorepo deployment (NestJS API + Next.js Web + PostgreSQL)
+type: application
+version: 0.1.0
+appVersion: "2.0.0"

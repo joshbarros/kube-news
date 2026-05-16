@@ -1,0 +1,73 @@
+# ── API (NestJS) ──────────────────────────────────────────────────────────────
+api:
+  replicaCount: 2
+  image:
+    repository: goldenglowitsolutions/kube-news-api
+    tag: "2.0.0"
+    pullPolicy: IfNotPresent
+  service:
+    # NodePort  → Docker Desktop (localhost:nodePort)
+    # LoadBalancer → cloud clusters
+    type: NodePort
+    port: 80
+    targetPort: 3001
+    nodePort: 30081
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+# ── Web (Next.js) ─────────────────────────────────────────────────────────────
+web:
+  replicaCount: 2
+  image:
+    repository: goldenglowitsolutions/kube-news-web
+    tag: "2.0.0"
+    pullPolicy: IfNotPresent
+  service:
+    type: NodePort
+    port: 80
+    targetPort: 3000
+    nodePort: 30082
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 256Mi
+
+# ── Runtime env values injected by ConfigMap ─────────────────────────────────
+env:
+  apiPort: "3001"
+  webPort: "3000"
+  corsOrigin: "http://localhost:30082"
+  nextPublicApiUrl: "http://localhost:30081"
+
+# ── Database (env vars injected into the app) ─────────────────────────────────
+database:
+  # Set externalHost to point to a managed DB (e.g. DO Managed Postgres).
+  # Leave empty to use the in-cluster Postgres defined below.
+  externalHost: ""
+  port: "5432"
+  name: "kubedevnews"
+  username: "kubedevnews"
+  password: "Pg#123"
+  sslRequire: "false"
+
+# ── In-cluster PostgreSQL ─────────────────────────────────────────────────────
+postgres:
+  # Set to false when using an external managed database
+  enabled: true
+  image: "postgres:15-alpine"
+  storage: "1Gi"
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi

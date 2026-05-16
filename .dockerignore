@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+src/node_modules/
+npm-debug.log*
+
+# Git
+.git/
+.gitignore
+
+# Docs / editor artefacts
+*.md
+.vscode/
+.idea/
+
+# Test / tooling
+*.test.js
+*.spec.js
+coverage/
+
+# OS
+.DS_Store
+Thumbs.db

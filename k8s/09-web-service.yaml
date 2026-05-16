@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kube-news-web-service
+  namespace: kube-news
+  labels:
+    app: kube-news-web
+spec:
+  selector:
+    app: kube-news-web
+  ports:
+    - port: 80
+      targetPort: 3000
+      nodePort: 30082
+  type: NodePort

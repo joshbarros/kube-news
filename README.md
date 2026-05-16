@@ -1,126 +1,198 @@
-# Kube-News
+# Kube News
 
-Uma aplicação de notícias desenvolvida em NodeJS para demonstrar o uso de containers e Kubernetes.
+Kube News is a full-stack monorepo built with modern TypeScript tooling and cloud-native practices.
 
-## 📋 Sobre o Projeto
+It includes:
+- A NestJS API with Prisma + PostgreSQL
+- A Next.js frontend with Tailwind CSS v4, shadcn/ui, and Redux Toolkit (RTK Query)
+- Local development with Docker Compose
+- Kubernetes + Helm assets for deployment workflows
 
-O projeto Kube-News é uma aplicação web simples desenvolvida em Node.js, projetada como exemplo para demonstrar o uso de contêineres. É um portal de notícias que permite criar, visualizar e gerenciar artigos através de uma interface web.
+## Project Goals
 
-### 🚀 Funcionalidades Principais
+- Provide a clean full-stack reference architecture for DevOps and platform learning
+- Keep backend and frontend strongly typed through a shared package
+- Enable fast local iteration and straightforward Kubernetes deployment
+- Follow production-minded standards (health/readiness probes, validation, versioned API)
 
-- Listagem de notícias na página inicial
-- Criação de novas notícias através de formulário
-- Visualização detalhada de cada notícia
-- API REST para inserção em massa de notícias
-- Endpoints de health check para monitoramento
-- Coleta de métricas para Prometheus
+## Tech Stack
 
-## 🛠️ Tecnologias Utilizadas
+- Language: TypeScript
+- Package manager: pnpm workspaces
+- Monorepo orchestrator: Turborepo
+- Backend: NestJS 10, Prisma, PostgreSQL
+- Frontend: Next.js 15 (App Router), React 19
+- State management: Redux Toolkit + RTK Query
+- UI: Tailwind CSS v4, shadcn/ui, Radix primitives
+- Containers and orchestration: Docker, Kubernetes, Helm
 
-- **Backend**: Node.js com Express.js
-- **Frontend**: EJS (Embedded JavaScript) como motor de templates
-- **Banco de Dados**: PostgreSQL com Sequelize ORM
-- **Monitoramento**: Prometheus (via express-prom-bundle)
+## Repository Structure
 
-## 📦 Estrutura do Projeto
-
+```text
+.
+├── apps/
+│   ├── api/                   # NestJS API
+│   │   ├── prisma/            # Prisma schema and migrations
+│   │   └── src/
+│   │       ├── health/        # /health and /ready
+│   │       ├── posts/         # Posts module, DTOs, service, controller
+│   │       └── prisma/        # Prisma module/provider wiring
+│   └── web/                   # Next.js app (App Router)
+│       └── src/
+│           ├── app/           # Routes and layout
+│           ├── components/    # UI and feature components
+│           └── lib/           # Store, API client, helpers
+├── packages/
+│   └── types/                 # Shared domain types
+├── helm/
+│   └── kube-news/             # Helm chart (legacy single-image deployment)
+├── k8s/                       # Raw Kubernetes manifests (legacy single-image deployment)
+├── docker-compose.yml         # Local PostgreSQL
+├── turbo.json
+├── pnpm-workspace.yaml
+└── README.md
 ```
-/
-├── src/                      # Código-fonte principal
-│   ├── models/               # Modelos de dados
-│   │   └── post.js           # Definição do modelo Post
-│   ├── views/                # Templates EJS
-│   │   ├── partial/          # Componentes parciais (header, footer)
-│   │   ├── edit-news.ejs     # Formulário de edição
-│   │   ├── index.ejs         # Página principal
-│   │   └── view-news.ejs     # Visualização de notícia
-│   ├── static/               # Arquivos estáticos (CSS, imagens)
-│   ├── middleware.js         # Middlewares personalizados
-│   ├── server.js             # Ponto de entrada da aplicação
-│   ├── system-life.js        # Endpoints de health check
-│   └── package.json          # Dependências
-├── popula-dados.http         # Arquivo para popular o banco com dados de exemplo
-└── README.md                 # Documentação
-```
 
-## 🔧 Configuração
+## Prerequisites
 
-### Pré-requisitos
+- Node.js >= 22
+- pnpm >= 10
+- Docker Desktop (for local PostgreSQL and optional Kubernetes)
+- kubectl + Helm (optional, for cluster deployment)
 
-- Node.js
-- PostgreSQL
-- Docker (opcional, para containerização)
-- Kubernetes (opcional, para orquestração)
+## Quick Start (Local)
 
-### Variáveis de Ambiente
-
-Para configurar a aplicação, defina as seguintes variáveis de ambiente:
-
-| Variável | Descrição | Valor Padrão |
-|----------|-----------|--------------|
-| DB_DATABASE | Nome do banco de dados | kubedevnews |
-| DB_USERNAME | Usuário do banco de dados | kubedevnews |
-| DB_PASSWORD | Senha do usuário | Pg#123 |
-| DB_HOST | Endereço do banco de dados | localhost |
-| DB_PORT | Porta do banco de dados | 5432 |
-| DB_SSL_REQUIRE | Habilitar SSL para conexão | false |
-
-## 🚀 Instalação e Execução
-
-### Execução Local
-
-1. Clone o repositório
-2. Instale as dependências:
-   ```bash
-   cd src
-   npm install
-   ```
-3. Configure as variáveis de ambiente necessárias
-4. Inicie a aplicação:
-   ```bash
-   npm start
-   ```
-5. Acesse a aplicação em [http://localhost:8080](http://localhost:8080)
-
-### População de Dados de Exemplo
-
-Utilize o arquivo `popula-dados.http` para inserir notícias de exemplo:
+1. Install dependencies from repository root:
 
 ```bash
-# Com uma ferramenta como o REST Client no VS Code ou curl
-POST http://localhost:8080/api/post
-Content-Type: application/json
-# Conteúdo do arquivo popula-dados.http
+pnpm install
 ```
 
-## 📊 Monitoramento e Health Checks
+2. Start PostgreSQL locally:
 
-A aplicação disponibiliza endpoints para monitoramento e também recursos para simular cenários de falha, muito úteis para testar a resiliência em ambientes Kubernetes:
+```bash
+docker compose up -d
+```
 
-### Endpoints de Monitoramento
-- `/health` - Verifica o estado atual da aplicação (retorna status da aplicação e hostname da máquina)
-- `/ready` - Verifica se a aplicação está pronta para receber tráfego
-- `/metrics` - Métricas do Prometheus (geradas pelo express-prom-bundle)
+3. Run Prisma migration in the API app:
 
-### Simulação de Falhas (Chaos Engineering)
-- `/unhealth` - (PUT) Altera o estado da aplicação para não saudável. Todas as requisições subsequentes receberão status code 500.
-- `/unreadyfor/:seconds` - (PUT) Simula indisponibilidade temporária por um número específico de segundos. Durante este período, o endpoint `/ready` retornará status code 500.
+```bash
+cd apps/api
+pnpm exec prisma migrate dev --name init
+```
 
-Estes recursos de simulação de falhas são extremamente úteis para testar:
-- Comportamento de probes de liveness e readiness no Kubernetes
-- Políticas de retry e circuit breaker
-- Mecanismos de failover
-- Resiliência geral da sua infraestrutura
+4. Return to repository root and start both apps:
 
-## 🔒 Modelo de Dados
+```bash
+cd ../..
+pnpm dev
+```
 
-O projeto utiliza um único modelo `Post` com os seguintes campos:
+5. Open:
+- Web: http://localhost:3000
+- API: http://localhost:3001
+- Swagger: http://localhost:3001/api/docs
 
-| Campo | Tipo | Descrição |
-|-------|------|-----------|
-| title | String | Título da notícia (limite: 30 caracteres) |
-| summary | String | Resumo da notícia (limite: 50 caracteres) |
-| content | String | Conteúdo completo (limite: 2000 caracteres) |
-| publishDate | Date | Data de publicação |
+## Environment Variables
 
+### API (`apps/api/.env`)
 
+```env
+DATABASE_URL="postgresql://kubedevnews:Pg%23123@localhost:5432/kubedevnews"
+PORT=3001
+CORS_ORIGIN="http://localhost:3000"
+```
+
+Important:
+- If your password contains `#`, encode it as `%23` in `DATABASE_URL`.
+
+### Web (`apps/web/.env.local`)
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3001
+```
+
+## Monorepo Commands
+
+From repository root:
+
+```bash
+pnpm dev      # Run all dev servers via Turbo
+pnpm build    # Build all workspaces
+pnpm lint     # Run lint tasks in all workspaces
+pnpm format   # Format TS/TSX/JSON/CSS/MD files
+```
+
+### App-Specific Commands
+
+API (`apps/api`):
+
+```bash
+pnpm dev
+pnpm build
+pnpm start
+pnpm exec prisma generate
+pnpm exec prisma migrate dev --name <migration-name>
+```
+
+Web (`apps/web`):
+
+```bash
+pnpm dev
+pnpm build
+pnpm start
+```
+
+## API Overview
+
+Base URL: `http://localhost:3001/api/v1`
+
+- `GET /posts` - List all posts (sorted by publish date descending)
+- `GET /posts/:id` - Fetch one post
+- `POST /posts` - Create post
+- `PATCH /posts/:id` - Update post
+- `DELETE /posts/:id` - Delete post
+
+Operational endpoints:
+- `GET /health` - Liveness endpoint
+- `GET /ready` - Readiness endpoint (checks database availability)
+
+## Data Model
+
+Prisma model: `Post`
+
+- `id` (Int, auto-increment)
+- `title` (String)
+- `summary` (String)
+- `content` (String)
+- `publishDate` (DateTime, default now)
+- `createdAt` (DateTime, default now)
+- `updatedAt` (DateTime, auto-updated)
+
+## Kubernetes and Helm
+
+This repository contains deployment assets under:
+- `k8s/` for raw manifests
+- `helm/kube-news/` for Helm-based deployment
+
+Current status:
+- These assets still target the legacy single-image deployment (`goldenglowitsolutions/kube-news:1.0.0`).
+- The new monorepo architecture runs two apps (`api` and `web`) and should be reflected in updated manifests/chart values.
+
+Recommended next deployment update:
+- Split workloads into `kube-news-api` and `kube-news-web`
+- Inject full `DATABASE_URL` for Prisma in API deployment
+- Set `NEXT_PUBLIC_API_URL` in web deployment to the internal API service
+- Keep PostgreSQL in-cluster or point to an external managed instance
+
+## E2E Validation Snapshot
+
+A browser-driven validation flow was executed successfully in the VS Code integrated browser:
+- Opened home page
+- Created a new post through the frontend form
+- Confirmed persistence through API (`GET /api/v1/posts`)
+- Opened the created post detail page
+
+## License
+
+For training and demo purposes.
