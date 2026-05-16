@@ -176,22 +176,27 @@ This repository contains deployment assets under:
 - `helm/kube-news/` for Helm-based deployment
 
 Current status:
-- These assets still target the legacy single-image deployment (`goldenglowitsolutions/kube-news:1.0.0`).
-- The new monorepo architecture runs two apps (`api` and `web`) and should be reflected in updated manifests/chart values.
+- Helm deploys split workloads for API and Web (`kube-news-api` and `kube-news-web`) plus in-cluster PostgreSQL.
+- API and Web images are published independently and can be versioned with separate tags.
 
 Recommended next deployment update:
-- Split workloads into `kube-news-api` and `kube-news-web`
-- Inject full `DATABASE_URL` for Prisma in API deployment
-- Set `NEXT_PUBLIC_API_URL` in web deployment to the internal API service
-- Keep PostgreSQL in-cluster or point to an external managed instance
+- Add a Helm hook Job (or initContainer) to run Prisma migrations automatically during release upgrades.
+- Add chart-level smoke tests (Helm test pods) for API health and web homepage checks.
 
 ## E2E Validation Snapshot
 
-A browser-driven validation flow was executed successfully in the VS Code integrated browser:
-- Opened home page
-- Created a new post through the frontend form
-- Confirmed persistence through API (`GET /api/v1/posts`)
-- Opened the created post detail page
+A local Kubernetes + Helm E2E run was executed on Docker Desktop using chart release `kube-news` in namespace `kube-news`.
+
+Validated results:
+- Helm upgrade/install completed with API and Web images tagged `2.0.3`
+- API health endpoint responded successfully (`GET /health`)
+- Posts endpoint responded successfully (`GET /api/v1/posts`)
+- Web app homepage responded successfully (HTTP `200`)
+
+Validation notes:
+- On macOS Docker Desktop, direct NodePort access to `localhost:30081` and `localhost:30082` can be unavailable depending on local networking setup.
+- For reliable local verification, service checks were executed with `kubectl port-forward` against API and Web services.
+- Database schema was synchronized in-cluster using Prisma after deployment (`prisma db push --accept-data-loss`) because migration history and existing schema state were not yet baselined.
 
 ## License
 
