@@ -1,0 +1,33 @@
+export const siteConfig = {
+  name: 'Kube News',
+  description:
+    'Kube News is a premium engineering blog about cloud platforms, performance, DevOps, data engineering, and event-driven systems.',
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
+  locale: 'en_US',
+  author: {
+    name: 'Josue A. da S. Barros',
+    fullName: 'Josue Andre da Silva Barros',
+    role: 'Senior Software Engineer',
+    location: 'Rio de Janeiro, Brazil',
+    github: 'https://github.com/joshbarros',
+    linkedin: 'https://linkedin.com/in/joshbarros',
+    website: 'https://josuebarros.com',
+    company: 'https://goldenglowitsolutions.com',
+    email: 'goldenglowitsolutions@gmail.com',
+  },
+  keywords: [
+    'cloud engineering blog',
+    'kubernetes',
+    'devops',
+    'platform engineering',
+    'software performance',
+    'core web vitals',
+    'event-driven systems',
+    'data engineering',
+    'azure',
+    'gcp',
+    'next.js',
+    'nestjs',
+    'postgresql',
+  ],
+};

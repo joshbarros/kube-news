@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 import { Fraunces, Space_Grotesk } from 'next/font/google';
 import { Navbar } from '@/components/navbar';
+import { Footer } from '@/components/footer';
+import { JsonLd } from '@/components/seo/json-ld';
+import { siteConfig } from '@/lib/site';
 import { Providers } from '@/providers';
 import './globals.css';
 
@@ -15,8 +18,29 @@ const bodyFont = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: 'Kube News',
-  description: 'A news portal demo running on Kubernetes',
+  metadataBase: new URL(siteConfig.url),
+  title: {
+    default: `${siteConfig.name} | Cloud, DevOps, and Platform Engineering`,
+    template: `%s | ${siteConfig.name}`,
+  },
+  description: siteConfig.description,
+  keywords: siteConfig.keywords,
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    type: 'website',
+    locale: siteConfig.locale,
+    url: siteConfig.url,
+    siteName: siteConfig.name,
+    title: `${siteConfig.name} | Cloud, DevOps, and Platform Engineering`,
+    description: siteConfig.description,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `${siteConfig.name} | Cloud, DevOps, and Platform Engineering`,
+    description: siteConfig.description,
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -32,6 +56,33 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
         <Providers>
+          <JsonLd
+            data={[
+              {
+                '@context': 'https://schema.org',
+                '@type': 'WebSite',
+                name: siteConfig.name,
+                url: siteConfig.url,
+                description: siteConfig.description,
+                inLanguage: 'en',
+              },
+              {
+                '@context': 'https://schema.org',
+                '@type': 'Organization',
+                name: siteConfig.name,
+                url: siteConfig.url,
+                founder: {
+                  '@type': 'Person',
+                  name: siteConfig.author.fullName,
+                },
+                sameAs: [
+                  siteConfig.author.github,
+                  siteConfig.author.linkedin,
+                  siteConfig.author.website,
+                ],
+              },
+            ]}
+          />
           <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden>
             <div className="orb bg-primary/20 absolute -left-16 top-10 h-56 w-56 rounded-full" />
             <div className="orb bg-accent/20 absolute right-0 top-20 h-64 w-64 rounded-full [animation-delay:2s]" />
@@ -39,6 +90,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
           <Navbar />
           <main className="container mx-auto px-4 py-8 md:py-12">{children}</main>
+          <Footer />
         </Providers>
       </body>
     </html>

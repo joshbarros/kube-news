@@ -6,7 +6,6 @@
     "lib": ["ES2022"],
     "outDir": "./dist",
     "rootDir": "./src",
-    "baseUrl": "./",
     "paths": {
       "@kube-news/types": ["../../packages/types/src/index.ts"]
     },
