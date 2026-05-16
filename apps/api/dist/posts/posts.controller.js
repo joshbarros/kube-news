@@ -18,6 +18,7 @@ const swagger_1 = require("@nestjs/swagger");
 const posts_service_1 = require("./posts.service");
 const create_post_dto_1 = require("./dto/create-post.dto");
 const update_post_dto_1 = require("./dto/update-post.dto");
+const jwt_auth_guard_1 = require("../auth/jwt-auth.guard");
 let PostsController = class PostsController {
     postsService;
     constructor(postsService) {
@@ -58,6 +59,7 @@ __decorate([
 ], PostsController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Post)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, swagger_1.ApiOperation)({ summary: 'Create a new post' }),
     (0, swagger_1.ApiResponse)({ status: 201, description: 'Post created' }),
     __param(0, (0, common_1.Body)()),
@@ -67,6 +69,7 @@ __decorate([
 ], PostsController.prototype, "create", null);
 __decorate([
     (0, common_1.Patch)(':id'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, swagger_1.ApiOperation)({ summary: 'Update a post' }),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __param(1, (0, common_1.Body)()),
@@ -76,6 +79,7 @@ __decorate([
 ], PostsController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.HttpCode)(common_1.HttpStatus.NO_CONTENT),
     (0, swagger_1.ApiOperation)({ summary: 'Delete a post' }),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),

@@ -1,0 +1,12 @@
+{
+  "/_not-found/page": "/_not-found",
+  "/forgot-password/page": "/forgot-password",
+  "/admin/posts/new/page": "/admin/posts/new",
+  "/admin/page": "/admin",
+  "/posts/new/page": "/posts/new",
+  "/posts/[id]/page": "/posts/[id]",
+  "/page": "/",
+  "/register/page": "/register",
+  "/reset-password/page": "/reset-password",
+  "/login/page": "/login"
+}

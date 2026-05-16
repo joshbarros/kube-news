@@ -1,5 +1,12 @@
 {
+  "/_not-found/page": "app/_not-found/page.js",
+  "/forgot-password/page": "app/forgot-password/page.js",
+  "/admin/posts/new/page": "app/admin/posts/new/page.js",
+  "/admin/page": "app/admin/page.js",
+  "/posts/new/page": "app/posts/new/page.js",
   "/posts/[id]/page": "app/posts/[id]/page.js",
   "/page": "app/page.js",
-  "/posts/new/page": "app/posts/new/page.js"
+  "/register/page": "app/register/page.js",
+  "/reset-password/page": "app/reset-password/page.js",
+  "/login/page": "app/login/page.js"
 }

@@ -5,6 +5,13 @@ export const postsApi = createApi({
   reducerPath: 'postsApi',
   baseQuery: fetchBaseQuery({
     baseUrl: `${process.env.NEXT_PUBLIC_API_URL}/api/v1`,
+    prepareHeaders: (headers) => {
+      if (typeof window !== 'undefined') {
+        const token = localStorage.getItem('auth_token');
+        if (token) headers.set('authorization', `Bearer ${token}`);
+      }
+      return headers;
+    },
   }),
   tagTypes: ['Post'],
   endpoints: (builder) => ({
@@ -12,7 +19,10 @@ export const postsApi = createApi({
       query: () => '/posts',
       providesTags: (result) =>
         result
-          ? [...result.map(({ id }) => ({ type: 'Post' as const, id })), { type: 'Post', id: 'LIST' }]
+          ? [
+              ...result.map(({ id }) => ({ type: 'Post' as const, id })),
+              { type: 'Post', id: 'LIST' },
+            ]
           : [{ type: 'Post', id: 'LIST' }],
     }),
 

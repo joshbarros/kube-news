@@ -26,9 +26,12 @@ export function PostForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="glass-panel space-y-6 rounded-3xl p-6 md:p-8"
+    >
       {error && (
-        <p className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+        <p className="bg-destructive/10 text-destructive rounded-md p-3 text-sm">
           Something went wrong. Please try again.
         </p>
       )}
@@ -38,9 +41,10 @@ export function PostForm() {
         <Input
           id="title"
           placeholder="Article title"
+          className="bg-background/75"
           {...register('title', { required: 'Title is required', minLength: 3, maxLength: 80 })}
         />
-        {errors.title && <p className="text-xs text-destructive">{errors.title.message}</p>}
+        {errors.title && <p className="text-destructive text-xs">{errors.title.message}</p>}
       </div>
 
       <div className="space-y-2">
@@ -48,9 +52,14 @@ export function PostForm() {
         <Input
           id="summary"
           placeholder="One-line description"
-          {...register('summary', { required: 'Summary is required', minLength: 10, maxLength: 160 })}
+          className="bg-background/75"
+          {...register('summary', {
+            required: 'Summary is required',
+            minLength: 10,
+            maxLength: 160,
+          })}
         />
-        {errors.summary && <p className="text-xs text-destructive">{errors.summary.message}</p>}
+        {errors.summary && <p className="text-destructive text-xs">{errors.summary.message}</p>}
       </div>
 
       <div className="space-y-2">
@@ -58,17 +67,27 @@ export function PostForm() {
         <Textarea
           id="content"
           placeholder="Write your article here..."
+          className="bg-background/75"
           rows={12}
-          {...register('content', { required: 'Content is required', minLength: 20, maxLength: 5000 })}
+          {...register('content', {
+            required: 'Content is required',
+            minLength: 20,
+            maxLength: 5000,
+          })}
         />
-        {errors.content && <p className="text-xs text-destructive">{errors.content.message}</p>}
+        {errors.content && <p className="text-destructive text-xs">{errors.content.message}</p>}
       </div>
 
-      <div className="flex gap-3">
-        <Button type="submit" disabled={isLoading}>
+      <div className="flex flex-wrap gap-3">
+        <Button type="submit" disabled={isLoading} className="rounded-full px-5">
           {isLoading ? 'Publishing…' : 'Publish'}
         </Button>
-        <Button type="button" variant="outline" onClick={() => router.back()}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => router.back()}
+          className="rounded-full"
+        >
           Cancel
         </Button>
       </div>
